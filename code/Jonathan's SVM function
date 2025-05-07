@@ -1,7 +1,7 @@
 
 def svm(X_train, y_train, X_test):
     #from sklearn.svm import SVC
-    model = SVC(kernel='linear')  # You can also try 'rbf', 'poly', etc.
+    model = SVC(kernel="", C="", gamma="") 
     model.fit(X_train, y_train)
     y_pred = model.predict(X_test)
     return y_pred
