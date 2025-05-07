@@ -43,7 +43,7 @@ Weight: Patient's weight in kg.
 Blood Pressure: Systolic (ap_hi) and diastolic (ap_lo) blood pressure.
 Cholesterol: Normal, above normal, or well above normal.
 Glucose: Normal, above normal, or well above normal.
-Lifestyle Factors: Smoking, alcohol consumption, and physical activity.
+Lifestyle Factors: Smoking, alcohol consumption, and physical activity as binary variables. 
 Target Variable: cardio (1 = CVD, 0 = No CVD).
 
 
@@ -55,10 +55,10 @@ FoDS_G05_CvD/
 │   └── 2025_cardio_train.csv
 │
 ├── models/                   # Folder for individual model scripts
-│   ├── random_forest.py      # Random Forest model (your file)
-│   ├── knn.py                # KNN model
-│   ├── dnn.py                # Deep Neural Network model
-│   ├── svm.py                # SVM model
+│   ├── RandomForest.py      # Random Forest model (your file)
+│   ├── KNN.py                # KNN model
+│   ├── DNN.py                # Deep Neural Network model
+│   ├── SVM.py                # SVM model
 │
 ├── main.py                   # Main script to integrate and compare models
 ├── requirements.txt          # List of dependencies (e.g., pandas, scikit-learn, etc.)
