@@ -1,0 +1,53 @@
+import pandas as pd
+from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.model_selection import train_test_split
+from models.RandomForest import RF_func 
+from models.KNN import KNN_func
+from models.DNN import DNN_func
+from models.SVM import SVM_func
+
+def load_data():
+    # Load the dataset
+    data = pd.read_csv("data/2025_cardio_train.csv", index_col=0, na_filter=False)
+    data["cholesterol"] = data["cholesterol"].astype("category").cat.as_ordered()
+    data["gluc"] = data["gluc"].astype("category").cat.as_ordered()
+
+    # Outlier removal
+    data = data[(data["ap_hi"] <= 200) & (data["ap_hi"] >= 0)]
+    data = data[(data["ap_lo"] <= 200) & (data["ap_lo"] >= 0)]
+
+    # One-hot encoding
+    data_encoded = pd.get_dummies(data, drop_first=True)
+
+    # Train-test split
+    X = data_encoded.drop("cardio_1", axis=1)
+    y = data_encoded["cardio_1"]
+    return train_test_split(X, y, test_size=0.1, random_state=42)
+
+def run_model(model_func, X_train, X_test, y_train, y_test):
+    # Call the model function
+    y_pred = model_func(X_train, X_test, y_train)
+
+    # Evaluate the model
+    accuracy = accuracy_score(y_test, y_pred)
+    cm = confusion_matrix(y_test, y_pred)
+
+    return {"Accuracy": accuracy, "Confusion Matrix": cm}
+
+if __name__ == "__main__":
+    # Load data
+    X_train, X_test, y_train, y_test = load_data()
+
+    # Run models and collect results
+    results = {}
+    results["Random Forest"] = run_model(RF_func, X_train, X_test, y_train, y_test)
+    results["KNN"] = run_model(KNN_func, X_train, X_test, y_train, y_test)
+    results["DNN"] = run_model(DNN_func, X_train, X_test, y_train, y_test)
+    results["SVM"] = run_model(SVM_func, X_train, X_test, y_train, y_test)
+
+    # Print results
+    print("\nModel Performance Comparison:")
+    for model, metrics in results.items():
+        print(f"{model}:")
+        for metric, value in metrics.items():
+            print(f"  {metric}: {value}")

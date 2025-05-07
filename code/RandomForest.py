@@ -79,6 +79,7 @@ print(f"Random Forest Classifier Accuracy: {rf_accuracy:.2f}")
 
 print(pipe[1].get_params())#
 
+
 ####################
 # with hyperparameter tuning
 ####################
@@ -110,7 +111,7 @@ if __name__ == "__main__":
     best_params = grid_search.best_params_
     best_estimator = grid_search.best_estimator_ # Get the best estimator and it uses the best parameters
     print("Best Parameters:", best_params)
-    print("Best Estimator:", best_estimator)
+    print("Best Estimator:", best_estimator) #criterion='entropy', max_depth=20, min_samples_leaf=4, min_samples_split=10, n_estimators=200, random_state=42
 
     # Create a new pipeline with the best estimator
     pipe = Pipeline([
