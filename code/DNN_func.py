@@ -11,7 +11,7 @@ from torch.utils.data import Dataset, DataLoader
 
 def DNN_func(X_train, X_test, y_train, y_test) -> ndarray:
 
-    ### Data loading and preprocessing ###
+    ### Data loading and conversion ###
 
     # Convert pandas DataFrame to numpy array
     X_train, X_test, y_train, y_test = (
@@ -22,6 +22,8 @@ def DNN_func(X_train, X_test, y_train, y_test) -> ndarray:
     )
 
     ### Define the PyTorch Dataset ###
+
+    # Setup PyTorch tensor class
     class CardioDataset(Dataset):
         def __init__(self, features, labels):
             # Convert data to PyTorch tensors
@@ -40,6 +42,7 @@ def DNN_func(X_train, X_test, y_train, y_test) -> ndarray:
 
     ### Define a simple Deep Neural Network model
 
+    # Setup PyTorch DNN class
     class CardioDNN(nn.Module):
         def __init__(self, input_size, hidden_units, num_layers, num_classes, activation_fn=nn.ReLU):
             """
@@ -78,7 +81,7 @@ def DNN_func(X_train, X_test, y_train, y_test) -> ndarray:
     input_size = X_train.shape[1]  # number of features from your dataset
     num_classes = len(np.unique(y_train))  # e.g., 2 for binary classification
     hidden_units = 64  # you can adjust this parameter
-    num_layers = int(9)  # for example, creating 10 hidden layers
+    num_layers = int(9)  # for example, creating 9 hidden layers
 
     model = CardioDNN(input_size, hidden_units, num_layers, num_classes)
 
