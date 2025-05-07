@@ -1,6 +1,5 @@
 
-<<<<<<< Updated upstream
-=======
+
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.svm import SVC  # Support Vector Classifier
@@ -10,6 +9,7 @@ import numpy as np
 from sklearn.preprocessing import StandardScaler as sc 
 from sklearn.model_selection import GridSearchCV
 import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 
 
@@ -52,13 +52,19 @@ y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
 print(f"Accuracy: {accuracy:}")
 
+cm1 = confusion_matrix(y_test, y_pred)
+
+# Display it
+disp = ConfusionMatrixDisplay(confusion_matrix=cm1)
+disp.plot(cmap="Blues")
+plt.show()
 
 
 #Hyperparamtetric tuning and grid search optimization
 param_grid = {
-    'C': [0.1, 1, 10, 100],
-    'gamma': [0.001, 0.01, 0.1, 1],
-    'kernel': ['linear', 'rbf', 'poly']
+    'C': [0.1, 1, 10],
+    'gamma': [0.001, 0.01, 0.1],
+    'kernel': ['linear', 'rbf']
 }
 
 grid = GridSearchCV(SVC(), param_grid, refit=True, verbose=2, n_jobs=-1)
@@ -83,4 +89,11 @@ plt.ylabel("Mean Test Score")
 plt.title("Top 5 Hyperparameter Combinations")
 plt.tight_layout()
 plt.show()
->>>>>>> Stashed changes
+
+
+cm2 = confusion_matrix(y_test, y_pred)
+
+# Display it
+disp = ConfusionMatrixDisplay(confusion_matrix=cm2)
+disp.plot(cmap="Blues")
+plt.show()
