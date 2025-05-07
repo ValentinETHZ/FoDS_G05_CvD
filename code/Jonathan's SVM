@@ -44,7 +44,7 @@ X_train = scaler.fit_transform(X_train)
 X_test = scaler.transform(X_test)
 
 #SVM model
-model = SVC(kernel='linear')  # You can also try 'rbf', 'poly', etc.
+model = SVC(kernel="rbf", C=10, gamma=0.01)  
 model.fit(X_train, y_train)
 
 y_pred = model.predict(X_test)
@@ -59,7 +59,7 @@ disp = ConfusionMatrixDisplay(confusion_matrix=cm1)
 disp.plot(cmap="Blues")
 plt.show()
 
-
+"""
 #Hyperparamtetric tuning and grid search optimization
 param_grid = {
     'C': [0.1, 1, 10],
@@ -89,11 +89,5 @@ plt.ylabel("Mean Test Score")
 plt.title("Top 5 Hyperparameter Combinations")
 plt.tight_layout()
 plt.show()
+"""
 
-
-cm2 = confusion_matrix(y_test, y_pred)
-
-# Display it
-disp = ConfusionMatrixDisplay(confusion_matrix=cm2)
-disp.plot(cmap="Blues")
-plt.show()
