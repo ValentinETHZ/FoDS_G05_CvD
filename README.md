@@ -53,7 +53,7 @@ FoDS_G05_CvD/
 │
 ├── data/                     # Folder for dataset
 │   └── 2025_cardio_train.csv
-|
+│
 ├── models/                   # Folder for individual model scripts
 │   ├── random_forest.py      # Random Forest model (your file)
 │   ├── knn.py                # KNN model
