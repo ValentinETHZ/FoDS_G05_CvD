@@ -1,8 +1,5 @@
-import pandas as pd
 import numpy as np
 from numpy import ndarray
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
 import torch
 import torch.nn as nn
 import torch.optim as optim
