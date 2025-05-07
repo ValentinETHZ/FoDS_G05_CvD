@@ -3,7 +3,7 @@ This repository contains the implementation of multiple machine learning models 
 The project was developed as part of the Foundations of Data Science course at ETH Zurich. 
 The goal is to compare the performance of different models and identify the most effective approach for predicting CVD.
 
-##Features
+## Features
 - Random Forest Classifier: A robust ensemble learning method for classification tasks.
 - K-Nearest Neighbors (KNN): A simple, distance-based classification algorithm.
 - Support Vector Machine (SVM): A powerful algorithm for linear and non-linear classification.
@@ -48,6 +48,7 @@ Target Variable: cardio (1 = CVD, 0 = No CVD).
 
 
 ## Repository Structure: 
+```bash
 FoDS_G05_CvD/
 │
 ├── data/                     # Folder for dataset
@@ -62,3 +63,4 @@ FoDS_G05_CvD/
 ├── main.py                   # Main script to integrate and compare models
 ├── requirements.txt          # List of dependencies (e.g., pandas, scikit-learn, etc.)
 ├── README.md                 # Documentation for the project
+```  
