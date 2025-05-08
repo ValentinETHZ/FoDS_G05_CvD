@@ -9,17 +9,17 @@ from torch.utils.data import Dataset, DataLoader
 # Function for DNN
 # -------------------------
 
-def DNN_func(X_train, X_test, y_train, y_test) -> ndarray:
+def DNN_func(X_train, X_test, y_train) -> ndarray:
 
     ### Data loading and conversion ###
-
+    
     # Convert pandas DataFrame to numpy array
-    X_train, X_test, y_train, y_test = (
+    X_train, X_test, y_train = (
         np.array(X_train),
         np.array(X_test),
-        np.array(y_train),
-        np.array(y_test),
+        np.array(y_train)
     )
+    
 
     ### Define the PyTorch Dataset ###
 

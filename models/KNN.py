@@ -4,7 +4,7 @@ from sklearn.pipeline import Pipeline
 
 
 
-def KNN_func(X_train,X_test,y_train):
+def KNN_func(X_train, X_test, y_train):
 
     # Create a pipeline: scaling + KNN
     pipe = Pipeline([

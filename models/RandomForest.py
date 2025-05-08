@@ -6,7 +6,7 @@ from sklearn.pipeline import Pipeline
 
 
 
-def RF_func(X_train,X_test,y_train):
+def RF_func(X_train, X_test, y_train):
 
     #Standardization and scaling
     # Create a pipeline with StandardScaler and RandomForestClassifier
