@@ -1,6 +1,7 @@
 import pandas as pd
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 from models.RandomForest import RF_func 
 from models.KNN import KNN_func
 from models.DNN import DNN_func
@@ -35,8 +36,14 @@ def load_data():
     # Train-test split
     X = data_encoded.drop("cardio_1", axis=1)
     y = data_encoded["cardio_1"]
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
+
+    # Standardize the features
+    scaler = StandardScaler()
+    X_train = scaler.fit_transform(X_train)
+    X_test = scaler.transform(X_test)
     
-    return train_test_split(X, y, test_size=0.1, random_state=42)
+    return X_train, X_test, y_train, y_test
 
 def run_model(model_func, X_train, X_test, y_train, y_test):
     # Call the model function

@@ -8,7 +8,7 @@ def KNN_func(X_train, X_test, y_train):
 
     # Create a pipeline: scaling + KNN
     pipe = Pipeline([
-    ('scaler', StandardScaler()),  # Step 1: Standardize the features
+    #('scaler', StandardScaler()),  # Step 1: Standardize the features
     ('knn', KNeighborsClassifier())  # Step 2: Apply KNN
     ])
 

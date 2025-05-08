@@ -15,9 +15,9 @@ def DNN_func(X_train, X_test, y_train) -> ndarray:
     
     # Convert pandas DataFrame to numpy array
     X_train, X_test, y_train = (
-        np.array(X_train),
-        np.array(X_test),
-        np.array(y_train)
+        np.array(X_train).astype(np.float32),
+        np.array(X_test).astype(np.float32),
+        np.array(y_train).astype(np.float32),
     )
     
 
