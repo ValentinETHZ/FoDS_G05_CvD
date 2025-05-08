@@ -11,7 +11,6 @@ def RF_func(X_train, X_test, y_train):
     #Standardization and scaling
     # Create a pipeline with StandardScaler and RandomForestClassifier
     pipe = Pipeline([
-        ('scaler', StandardScaler()),  # Step 1: Standardize the features 
         ('rf', RandomForestClassifier (random_state = 42))  # Step 2: Apply Random Forest
     ])
 
