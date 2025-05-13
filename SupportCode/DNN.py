@@ -6,11 +6,13 @@ import matplotlib.pyplot as plt
 from matplotlib.tri import Triangulation
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, roc_auc_score
 import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
+import torch.nn.functional as F
+from captum.attr import IntegratedGradients
 
 
 # -------------------------
@@ -56,6 +58,9 @@ print(data.tail(5))
 # Construct features and labels
 X = data.drop('cardio_1', axis=1)
 y = data['cardio_1']
+
+# Define feature names as a list for feature analysis
+feature_names = X.columns.tolist()
 
 # Split into test and train set
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=2025)
@@ -110,8 +115,8 @@ rng_epoch = np.logspace(0, 2, 5)      # Range of number of epochs
 
 print(f'Model will be evaluated: Layers: {rng_layers}, Learning rate: {rng_learning_rate}, Epoch: {rng_epoch}')
 
-# Best accuracy setup
-best_acc = 0
+# Best auc setup
+best_auc = 0
 best_params = 0, 0, 0
 
 # looping over every model variant
@@ -217,23 +222,65 @@ for n_epochs in rng_epoch:
                 # the predicted class is the one with the highest logit.
                 y_pred = torch.argmax(y_pred_logits, dim=1).numpy()
 
+                # Apply softmax to logits to get probabilities
+                y_pred_proba = F.softmax(y_pred_logits, dim=1).numpy()
+                # For binary classification, take probability of class 1 (positive class)
+                y_scores = y_pred_proba[:, 1]  # class 1 probabilities
+
             # Convert y_test to a NumPy array if it isn't already
             y_true = np.array(y_test)
+            y_scores = np.array(y_scores)
 
             # Compute classification accuracy
             accuracy = accuracy_score(y_true, y_pred)
-            if accuracy > best_acc:
-                best_acc = accuracy
-                print("New best accuracy so far!")
+
+            # Compute the classification AUC score
+            auc = roc_auc_score(y_true, y_scores)
+
+            # Save best paramters for best AUC
+            if auc > best_auc:
+                best_auc = auc
+                print("New best auc so far!")
                 best_params = lr, lr, int(n_layers), int(n_epochs)
+
 
             new_row = {'Epoch': n_epochs, 'Learning Rate': lr, 'Layers': n_layers, 'Accuracy': accuracy}
             df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
             # Print out the metrics
-            print("Accuracy: {:.4f} with LR: {:.5f}, Number of Layers: {}, Number of Epochs: {}, ".format(accuracy, lr, int(n_layers), int(n_epochs)))
+            print("Accuracy: {:.4f} auc: {:.4f} with LR: {:.5f}, Number of Layers: {}, Number of Epochs: {}, ".format(accuracy, auc, lr, int(n_layers), int(n_epochs)))
+
+            # -------------------------
+            # Feature analysis
+            # -------------------------
+
+            # Choice of explainer
+            ig = IntegratedGradients(model)
+
+            # Define comparative array
+            baseline = torch.zeros_like(X_test_tensor)
+
+            # Compute attributions to positive class
+            attr_ig, delta = ig.attribute(
+                inputs=X_test_tensor,
+                baselines=baseline,
+                target=1,
+                return_convergence_delta=True
+            )
+
+            # Aggregate attributions across your test set
+            mean_attr = attr_ig.abs().mean(dim=0).cpu().numpy()
+
+            # Map back to feature names and sort
+            feature_importance = list(zip(feature_names, mean_attr))
+            feature_importance.sort(key=lambda x: x[1], reverse=True)
+
+            print("Feature Importances (Integrated Gradients):")
+            for feat, imp in feature_importance:
+                print(f"  {feat:10s} : {imp:.4f}")
+
 
 # best parameters output
-print(f'The best accuracy of {best_acc} was achieved with the following parameters: {best_params}')
+print(f'The best accuracy of {best_auc} was achieved with the following parameters: {best_params}')
 
 # Create the 'data' folder if it doesn't exist
 folder = "values"

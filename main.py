@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.metrics import accuracy_score, confusion_matrix
+from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score, f1_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
@@ -54,8 +54,11 @@ def run_model(model_func, X_train, X_test, y_train, y_test):
     # Evaluate the model
     accuracy = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
+    precision = precision_score(y_test, y_pred)
+    recall = recall_score(y_test, y_pred)
+    f1 = f1_score(y_test, y_pred)
 
-    return {"Accuracy": accuracy, "Confusion Matrix": cm}
+    return {"Accuracy": accuracy, "Confusion Matrix": cm, "Precision": precision, "Recall": recall, "F1": f1}
 
 if __name__ == "__main__":
     # Load data
