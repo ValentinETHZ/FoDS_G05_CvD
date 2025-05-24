@@ -4,6 +4,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
+import torch.nn.functional as F
 
 # -------------------------
 # Function for DNN
@@ -130,4 +131,10 @@ def DNN_func(X_train, X_test, y_train) -> ndarray:
         # the predicted class is the one with the highest logit.
         y_pred = torch.argmax(y_pred_logits, dim=1).numpy()
 
-    return y_pred
+        # Apply softmax to logits to get probabilities
+        y_pred_proba = F.softmax(y_pred_logits, dim=1).numpy()
+        # For binary classification, take probability of class 1 (positive class)
+        y_score = y_pred_proba[:, 1]  # class 1 probabilities
+
+    print('DNN model finished')
+    return y_pred, y_score

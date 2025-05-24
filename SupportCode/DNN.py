@@ -118,11 +118,12 @@ print(f'Model will be evaluated: Layers: {rng_layers}, Learning rate: {rng_learn
 # Best auc setup
 best_auc = 0
 best_params = 0, 0, 0
+prev_auc = 0
 
 # looping over every model variant
-for n_epochs in rng_epoch:
-    for n_layers in rng_layers:
-        for lr in rng_learning_rate:
+for n_epochs in np.flip(rng_epoch):
+    for n_layers in np.flip(rng_layers):
+        for lr in np.flip(rng_learning_rate):
             # -------------------------
             # Define a simple Deep Neural Network model
             # -------------------------
@@ -243,44 +244,52 @@ for n_epochs in rng_epoch:
                 print("New best auc so far!")
                 best_params = lr, lr, int(n_layers), int(n_epochs)
 
+                # -------------------------
+                # Feature analysis
+                # -------------------------
+
+                # Choice of explainer
+                ig = IntegratedGradients(model)
+
+                # Define comparative array
+                baseline = torch.zeros_like(X_test_tensor)
+
+                # Compute attributions to positive class
+                attr_ig, delta = ig.attribute(
+                    inputs=X_test_tensor,
+                    baselines=baseline,
+                    target=1,
+                    return_convergence_delta=True
+                )
+
+                # Aggregate attributions across your test set
+                mean_attr = attr_ig.abs().mean(dim=0).cpu().numpy()
+
+                # Map back to feature names and sort
+                feature_importance = list(zip(feature_names, mean_attr))
+                feature_importance.sort(key=lambda x: x[1], reverse=True)
+
+                print("Feature Importances (Integrated Gradients):")
+                for feat, imp in feature_importance:
+                    print(f"  {feat:10s} : {imp:.4f}")
+
 
             new_row = {'Epoch': n_epochs, 'Learning Rate': lr, 'Layers': n_layers, 'Accuracy': accuracy}
             df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
             # Print out the metrics
             print("Accuracy: {:.4f} auc: {:.4f} with LR: {:.5f}, Number of Layers: {}, Number of Epochs: {}, ".format(accuracy, auc, lr, int(n_layers), int(n_epochs)))
 
-            # -------------------------
-            # Feature analysis
-            # -------------------------
-
-            # Choice of explainer
-            ig = IntegratedGradients(model)
-
-            # Define comparative array
-            baseline = torch.zeros_like(X_test_tensor)
-
-            # Compute attributions to positive class
-            attr_ig, delta = ig.attribute(
-                inputs=X_test_tensor,
-                baselines=baseline,
-                target=1,
-                return_convergence_delta=True
-            )
-
-            # Aggregate attributions across your test set
-            mean_attr = attr_ig.abs().mean(dim=0).cpu().numpy()
-
-            # Map back to feature names and sort
-            feature_importance = list(zip(feature_names, mean_attr))
-            feature_importance.sort(key=lambda x: x[1], reverse=True)
-
-            print("Feature Importances (Integrated Gradients):")
-            for feat, imp in feature_importance:
-                print(f"  {feat:10s} : {imp:.4f}")
+            if prev_auc > auc:
+                print(f'AUC decreased, LR loop will be stopped: curr AUC:{auc:.4f} < prev AUC:{prev_auc:.4f}')
+                prev_auc = 0
+                break
+            else:
+                prev_auc = auc
 
 
 # best parameters output
 print(f'The best accuracy of {best_auc} was achieved with the following parameters: {best_params}')
+print(f'Feature analysis for the best model parameters: {feature_importance}')
 
 # Create the 'data' folder if it doesn't exist
 folder = "values"

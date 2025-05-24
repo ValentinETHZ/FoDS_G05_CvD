@@ -22,6 +22,9 @@ def KNN_func(X_train, X_test, y_train):
 
     # fit and return predictions
     pipe.fit(X_train, y_train)
+    proba = pipe.predict_proba(X_test)
+    y_score = proba[:, 1]
     y_pred = pipe.predict(X_test)
 
-    return y_pred
+    print('KNN model finished')
+    return y_pred, y_score

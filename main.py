@@ -1,5 +1,5 @@
 import pandas as pd
-from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score, f1_score
+from sklearn.metrics import accuracy_score, confusion_matrix, precision_score, recall_score, f1_score, roc_auc_score
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
@@ -49,16 +49,17 @@ def load_data():
 
 def run_model(model_func, X_train, X_test, y_train, y_test):
     # Call the model function
-    y_pred = model_func(X_train, X_test, y_train)
+    y_pred, y_score = model_func(X_train, X_test, y_train)
 
     # Evaluate the model
+    auc = roc_auc_score(y_test, y_score)
     accuracy = accuracy_score(y_test, y_pred)
     cm = confusion_matrix(y_test, y_pred)
     precision = precision_score(y_test, y_pred)
     recall = recall_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred)
 
-    return {"Accuracy": accuracy, "Confusion Matrix": cm, "Precision": precision, "Recall": recall, "F1": f1}
+    return {"AUC": auc, "Accuracy": accuracy, "Confusion Matrix": cm, "Precision": precision, "Recall": recall, "F1": f1}
 
 if __name__ == "__main__":
     # Load data
@@ -68,8 +69,8 @@ if __name__ == "__main__":
     results = {}
     results["Random Forest"] = run_model(RF_func, X_train, X_test, y_train, y_test)
     results["KNN"] = run_model(KNN_func, X_train, X_test, y_train, y_test)
-    results["DNN"] = run_model(DNN_func, X_train, X_test, y_train, y_test)
     results["SVM"] = run_model(SVM_func, X_train, X_test, y_train, y_test)
+    results["DNN"] = run_model(DNN_func, X_train, X_test, y_train, y_test)
 
     # Print results
     print("\nModel Performance Comparison:")
