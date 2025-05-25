@@ -5,15 +5,16 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import Dataset, DataLoader
 import torch.nn.functional as F
+from captum.attr import IntegratedGradients
 
 # -------------------------
 # Function for DNN
 # -------------------------
 
-def DNN_func(X_train, X_test, y_train) -> ndarray:
+def DNN_func(X_train, X_test, y_train, y_test, feature_names) -> ndarray:
 
     ### Data loading and conversion ###
-    
+
     # Convert pandas DataFrame to numpy array
     X_train, X_test, y_train = (
         np.array(X_train, dtype=np.float32),
@@ -135,6 +136,28 @@ def DNN_func(X_train, X_test, y_train) -> ndarray:
         y_pred_proba = F.softmax(y_pred_logits, dim=1).numpy()
         # For binary classification, take probability of class 1 (positive class)
         y_score = y_pred_proba[:, 1]  # class 1 probabilities
+        print('DNN model predictions finished')
 
-    print('DNN model finished')
-    return y_pred, y_score
+        # Feature analysis
+        ig = IntegratedGradients(model)
+
+        # Define comparative array
+        baseline = torch.zeros_like(X_test_tensor)
+
+        # Compute attributions to positive class
+        attr_ig, delta = ig.attribute(
+            inputs=X_test_tensor,
+            baselines=baseline,
+            target=1,
+            return_convergence_delta=True
+        )
+
+        # Aggregate attributions across your test set
+        mean_attr = attr_ig.abs().mean(dim=0).cpu().numpy()
+
+        # Map back to feature names and sort
+        feature_importance = list(zip(feature_names, mean_attr))
+        feature_importance.sort(key=lambda x: x[1], reverse=True)
+        print('DNN model feature analysis finished')
+
+    return y_pred, y_score, feature_importance

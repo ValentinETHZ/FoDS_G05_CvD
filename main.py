@@ -38,6 +38,9 @@ def load_data():
     X = data_encoded.drop("cardio_1", axis=1)
     y = data_encoded["cardio_1"]
 
+    # Extract feature names
+    feature_names = X.columns.tolist()
+
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.1, random_state=42)
 
     # Scaling
@@ -45,11 +48,11 @@ def load_data():
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
     
-    return X_train, X_test, y_train, y_test
+    return X_train, X_test, y_train, y_test, feature_names
 
-def run_model(model_func, X_train, X_test, y_train, y_test):
+def run_model(model_func, X_train, X_test, y_train, y_test, feature_names):
     # Call the model function
-    y_pred, y_score = model_func(X_train, X_test, y_train)
+    y_pred, y_score, feature_importance = model_func(X_train, X_test, y_train, y_test, feature_names)
 
     # Evaluate the model
     auc = roc_auc_score(y_test, y_score)
@@ -59,18 +62,25 @@ def run_model(model_func, X_train, X_test, y_train, y_test):
     recall = recall_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred)
 
-    return {"AUC": auc, "Accuracy": accuracy, "Confusion Matrix": cm, "Precision": precision, "Recall": recall, "F1": f1}
+    return {
+        "AUC": auc,
+        "Accuracy": accuracy,
+        "Confusion Matrix": cm,
+        "Precision": precision,
+        "Recall": recall, "F1": f1,
+        "Feature Importance": feature_importance
+    }
 
 if __name__ == "__main__":
     # Load data
-    X_train, X_test, y_train, y_test = load_data()
+    X_train, X_test, y_train, y_test, feature_names = load_data()
 
     # Run models and collect results
     results = {}
-    results["Random Forest"] = run_model(RF_func, X_train, X_test, y_train, y_test)
-    results["KNN"] = run_model(KNN_func, X_train, X_test, y_train, y_test)
-    results["SVM"] = run_model(SVM_func, X_train, X_test, y_train, y_test)
-    results["DNN"] = run_model(DNN_func, X_train, X_test, y_train, y_test)
+    results["Random Forest"] = run_model(RF_func, X_train, X_test, y_train, y_test, feature_names)
+    results["KNN"] = run_model(KNN_func, X_train, X_test, y_train, y_test, feature_names)
+    results["SVM"] = run_model(SVM_func, X_train, X_test, y_train, y_test, feature_names)
+    results["DNN"] = run_model(DNN_func, X_train, X_test, y_train, y_test, feature_names)
 
     # Print results
     print("\nModel Performance Comparison:")
