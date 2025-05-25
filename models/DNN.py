@@ -17,9 +17,11 @@ def DNN_func(X_train, X_test, y_train, y_test, feature_names) -> ndarray:
 
     # Convert pandas DataFrame to numpy array
     X_train, X_test, y_train = (
+
         np.array(X_train, dtype=np.float32),
         np.array(X_test, dtype=np.float32),
         np.array(y_train, dtype=np.float32)
+
     )
 
     ### Define the PyTorch Dataset ###
