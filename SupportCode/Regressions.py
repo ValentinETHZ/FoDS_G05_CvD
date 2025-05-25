@@ -110,3 +110,5 @@ y_pred = best_model.predict(X_test)
 
 rmse = mean_squared_error(y_test, y_pred, squared=False)
 print("RMSE: {:.3f} ".format(rmse))
+
+# AUC calc incoming
