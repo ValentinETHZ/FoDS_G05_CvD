@@ -1,7 +1,9 @@
 from sklearn.inspection import permutation_importance
 from sklearn.svm import SVC
 
+
 def SVM_func(X_train, X_test, y_train, y_test, feature_names):
+
     #from sklearn.svm import SVC
     model = SVC(kernel="rbf", C=10, gamma=0.01, probability=True)
 
