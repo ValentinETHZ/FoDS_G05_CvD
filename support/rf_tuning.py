@@ -92,13 +92,13 @@ param_grid = {
     'rf__criterion': ['gini', 'entropy'] # Function to measure the quality of a split
 }
 
-param_grid = {
+"""param_grid = {
     'rf__n_estimators': [200], # Number of trees in the forest
     'rf__max_depth': [20], # Maximum depth of the tree
     'rf__min_samples_split': [10],  # Minimum number of samples required to split an internal node
     'rf__min_samples_leaf': [4], # Minimum number of samples required to be at a leaf node
     'rf__criterion': ['entropy'] # Function to measure the quality of a split
-}
+}"""
 
 
 if __name__ == "__main__":
@@ -130,7 +130,23 @@ if __name__ == "__main__":
     print(f"Random Forest Classifier Accuracy after Hyperparameter Tuning: {rf_accuracy:.2f}")
 
 
-
+    #confusion matrix visualization
     from sklearn.metrics import confusion_matrix
     print(confusion_matrix(y_test, rf_y_pred))
+
+    from sklearn.metrics import ConfusionMatrixDisplay
+
+    disp = ConfusionMatrixDisplay(
+    confusion_matrix=confusion_matrix(y_test, rf_y_pred),
+    display_labels=["No CVD", "CVD"])
+
+    print(disp.confusion_matrix)
+    disp.plot()
+    plt.title("Confusion Matrix")
+
+    # Rotate the y-axis labels to vertical
+    plt.xticks(rotation=0)
+    plt.yticks(rotation=90)
+
+    plt.show()
 
