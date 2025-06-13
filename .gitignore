@@ -9,3 +9,7 @@
 # Local history files
 .idea/
 *.iml
+# Gradle files
+__pycache__/
+*.pyc
+.DS_Store
