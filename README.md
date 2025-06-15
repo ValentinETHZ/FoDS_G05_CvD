@@ -41,6 +41,11 @@ We evaluate models using AUC, accuracy, precision, recall, F1 score, and confusi
 ### Reproducibility
 The script saves model results to `output/results.pkl` after the first run. On subsequent runs, results are loaded from this file for fast plotting and analysis. To rerun all models and feature importance analysis, delete `output/results.pkl` and run `python main.py` again.
 
+### Data Exploration and Hyperparameter Tuning
+Exploratory data analysis (EDA) and data overview are performed in support/data_overview_EDA.ipynb.
+Hyperparameter tuning for each model is implemented in the support/ folder (e.g., rf_tuning.py, knn_tuning.py, etc.).
+These scripts and notebooks are provided for transparency and reproducibility, but are not required to run the main pipeline.
+
 ## Data
 The dataset contains 70,000 rows of patient data with the following features:
 
@@ -58,7 +63,7 @@ Target Variable: cardio (1 = CVD, 0 = No CVD).
 - Model performance comparison bar chart (`output/model_performance_comparison.png`)
 - ROC curve plot for all models (`output/roc_curves.png`)
 - Feature importance plots for each model (`output/feature_importance_<model>.png`)
-- Results and metrics printed to the console
+- Tabular summary of all model evaluation metrics (`output/model_metrics.csv`)
 
 
 ## Repository Structure: 
@@ -75,11 +80,12 @@ FoDS_G05_CvD/
 │   ├── DNN.py
 │
 ├── support/                    # Support code for experiments and tuning
-│   ├── overview.py             # Data overview and preprocessing
-│   ├── rf_tuning.py        # Hyperparameter tuning for Random Forest
-│   ├── knn_tuning.py       # Hyperparameter tuning for KNN
-│   ├── svm_tuning.py       # Hyperparameter tuning for SVM
-│   ├── dnn_tuning.ipynb        # Hyperparameter tuning for DNN (example: Jupyter notebook)
+│   ├── data_overview.ipynb         # Data overview and EDA notebook
+│   ├── rf_tuning.py                # Random Forest hyperparameter tuning
+│   ├── knn_tuning.py               # KNN hyperparameter tuning
+│   ├── svm_tuning.py               # SVM hyperparameter tuning
+│   ├── dnn_tuning.py               # DNN hyperparameter tuning
+│   ├── dnn_tuning.csv              # DNN tuning results 
 │
 ├── output/                     # All generated outputs (plots, results, etc.)
 │   ├── model_performance_comparison.png
@@ -88,8 +94,9 @@ FoDS_G05_CvD/
 │   ├── feature_importance_knn.png
 │   ├── feature_importance_random_forest.png
 │   ├── feature_importance_svm.png
-│   ├── feature_importance_random_all.png
+│   ├── aggregate_normalized_feature_importance.png
 │   ├── results.pkl
+│   ├── model_metrics.csv
 │
 ├── main.py                     # Main script to run the full workflow
 ├── requirements.txt            # All dependencies
