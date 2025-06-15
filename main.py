@@ -8,6 +8,7 @@ import numpy as np
 import os
 import pickle
 from collections import Counter
+import csv
 
 from models.RandomForest import RF_func
 from models.KNN import KNN_func
@@ -144,6 +145,18 @@ if __name__ == "__main__":
     plt.show()
     print("Saved model performance bar chart.")
 
+    # Save model metrics to CSV
+    csv_metrics = ["AUC", "Accuracy", "Precision", "Recall", "F1"]
+    csv_models = list(results.keys())
+
+    with open("output/model_metrics.csv", "w", newline="") as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow(["Model"] + csv_metrics)
+        for model in csv_models:
+            row = [model] + [f"{results[model][metric]:.4f}" for metric in csv_metrics]
+            writer.writerow(row)
+    print("Saved model metrics to output/model_metrics.csv.")
+
     print("Creating ROC curve plot...")
     #ROC Curve visualization
     plt.figure(figsize=(8, 6))
@@ -182,6 +195,8 @@ if __name__ == "__main__":
         plt.show()
     print("All feature importance plots saved.")
 
+
+    ####### Aggregate feature importance across all models #######
     # 1) Accumulate each feature’s (normalized) importance across all models
     total_importance = Counter()
     for model in models:
