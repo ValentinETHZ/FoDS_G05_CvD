@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pickle
-
+from collections import Counter
 
 from models.RandomForest import RF_func
 from models.KNN import KNN_func
@@ -181,3 +181,34 @@ if __name__ == "__main__":
         plt.savefig(f"output/feature_importance_{model.replace(' ', '_').lower()}.png")
         plt.show()
     print("All feature importance plots saved.")
+
+    # 1) Accumulate each feature’s (normalized) importance across all models
+    total_importance = Counter()
+    for model in models:
+        fi = results[model]["Feature Importance"]
+        # unpack
+        feature_names, raw_importances = zip(*fi)
+        # compute per‐model sum
+        s = sum(raw_importances)
+        if s == 0:
+            # avoid division by zero; you could skip or leave as zero
+            normalized = [0] * len(raw_importances)
+        else:
+            normalized = [imp / s for imp in raw_importances]
+
+        # add to the running total
+        for feat, imp_norm in zip(feature_names, normalized):
+            total_importance[feat] += imp_norm
+
+    # 2) Sort features by their aggregated (summed) normalized importance
+    features, importances = zip(*total_importance.most_common())
+
+    # 3) Plot
+    plt.figure(figsize=(8, 5))
+    plt.barh(range(len(importances)), importances[::-1], align='center')
+    plt.yticks(range(len(importances)), features[::-1])
+    plt.xlabel('Summed Normalized Importance')
+    plt.title('Aggregate Feature Importances (each model scaled to sum=1)')
+    plt.tight_layout()
+    plt.savefig("output/aggregate_normalized_feature_importance.png")
+    plt.show()
