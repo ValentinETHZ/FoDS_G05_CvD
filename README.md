@@ -32,11 +32,11 @@ python main.py
 - The dataset (`2025_cardio_train.csv`) is included in the `data/` folder. It contains patient information such as age, blood pressure, cholesterol levels, and more.
 - The `main.py` script integrates all models and compares their performance.
 - Each model is implemented in the `models/` folder as a separate Python file.
-- The script outputs accuracy scores, confusion matrices, and plots for each model.
+- The script outputs evaluation results and plots for each model.
 - You can adjust hyperparameters for each model in their respective scripts (e.g., `RandomForest.py`, `KNN.py`).
 
 ### Evaluation Metrics
-We evaluate models using AUC, accuracy, precision, recall, F1 score, and confusion matrices to provide a comprehensive assessment of predictive performance.
+The models are evaluated using AUC, accuracy, precision, recall and F1 score, to provide a comprehensive assessment of predictive performance.
 
 ### Reproducibility
 The script saves model results to `output/results.pkl` after the first run. On subsequent runs, results are loaded from this file for fast plotting and analysis. To rerun all models and feature importance analysis, delete `output/results.pkl` and run `python main.py` again.
@@ -79,14 +79,6 @@ FoDS_G05_CvD/
 │   ├── SVM.py
 │   ├── DNN.py
 │
-├── support/                    # Support code for experiments and tuning
-│   ├── data_overview.ipynb         # Data overview and EDA notebook
-│   ├── rf_tuning.py                # Random Forest hyperparameter tuning
-│   ├── knn_tuning.py               # KNN hyperparameter tuning
-│   ├── svm_tuning.py               # SVM hyperparameter tuning
-│   ├── dnn_tuning.py               # DNN hyperparameter tuning
-│   ├── dnn_tuning.csv              # DNN tuning results 
-│
 ├── output/                     # All generated outputs (plots, results, etc.)
 │   ├── model_performance_comparison.png
 │   ├── roc_curves.png
@@ -97,6 +89,14 @@ FoDS_G05_CvD/
 │   ├── aggregate_normalized_feature_importance.png
 │   ├── results.pkl
 │   ├── model_metrics.csv
+│
+├── support/                    # Support code for experiments and tuning
+│   ├── data_overview.ipynb         # Data overview and EDA notebook
+│   ├── rf_tuning.py                # Random Forest hyperparameter tuning
+│   ├── knn_tuning.py               # KNN hyperparameter tuning
+│   ├── svm_tuning.py               # SVM hyperparameter tuning
+│   ├── dnn_tuning.py               # DNN hyperparameter tuning
+│   ├── dnn_tuning.csv              # DNN tuning results 
 │
 ├── main.py                     # Main script to run the full workflow
 ├── requirements.txt            # All dependencies
